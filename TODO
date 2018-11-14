@@ -14,6 +14,10 @@ Geometry Wars:
     ☐ attacks
     ☐ defenses
     ☐ bosses
+    ☐ drops
+      ☐ new weapons
+      ☐ score multipliers
+    ☐ points per kill - based off enemy difficulty
   
   Particle Effects:
     ☐ projectile hit world bounds
