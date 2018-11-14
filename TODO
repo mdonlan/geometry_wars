@@ -1,0 +1,29 @@
+
+Geometry Wars:
+  
+  Player:
+    ☐ sprite
+    ☐ movement
+    ☐ shooting
+    ☐ collision
+
+  Enemies:
+    ☐ spawn
+    ☐ types
+    ☐ movement
+    ☐ attacks
+    ☐ defenses
+    ☐ bosses
+  
+  Particle Effects:
+    ☐ projectile hit world bounds
+    ☐ enemy death
+    ☐ player death
+    ☐ power-ups
+
+  Power-ups:
+    ☐ invincible
+    ☐ 
+
+  
+  
