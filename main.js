@@ -26,6 +26,18 @@ let enemyTypes = [
   }
 ];
 
+let particleColors = [
+  '0xFF5733',
+  '0x77FF33',
+  '0x33FFDA',
+  '0x337DFF',
+  '0x5E33FF',
+  '0xECFF33',
+  '0xFFBE33',
+  '0xFF33FF',
+  '0xFF3399',
+]
+
 function preload() {
   // load assets
   game.load.image('player', 'assets/player.png');
@@ -36,22 +48,14 @@ function preload() {
 function create() {
   // create groups
   projectiles = game.add.group();
-  projectilesDead = game.add.group();
   enemies = game.add.group();
-  enemiesDead = game.add.group();
 
-  cursors = game.input.keyboard.createCursorKeys();
-
+  // start physics
   game.physics.startSystem(Phaser.Physics.ARCADE);
-  
+
+  // create the player
   player = game.add.sprite(0, 0, 'player');
-  let playerOutline = player.addChild(game.make.sprite(0, 0, 'player'));
-  playerOutline.scale.setTo(1.1, 1.1);
-  playerOutline.anchor.setTo(0.5, 0.5);
-  playerOutline.tint = "0x5AF21C";
-
   player.anchor.setTo(0.5, 0.5);
-
   game.physics.arcade.enable(player);
   player.body.collideWorldBounds = true;
 
@@ -68,6 +72,18 @@ function create() {
   triangle.ctx.fillStyle = '#dddddd';
   triangle.ctx.fill();
 
+  // create line particle
+  line = game.add.bitmapData(6,2);
+  line.ctx.beginPath();
+  line.ctx.moveTo(0, 0);
+  line.ctx.lineTo(0, 2);
+  line.ctx.lineTo(6, 2);
+  line.ctx.lineTo(6, 0);
+  line.ctx.fillStyle = '#dddddd';
+  line.ctx.fill();
+  game.cache.addBitmapData('line', line); // add to cache so we can load it
+  
+  // setup keyboard input
   spaceKey = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
   wKey = game.input.keyboard.addKey(Phaser.KeyCode.W);
   aKey = game.input.keyboard.addKey(Phaser.KeyCode.A);
@@ -81,6 +97,7 @@ function update() {
   game.physics.arcade.overlap(projectiles, enemies, projectileHitEnemy);
   game.physics.arcade.overlap(player, enemies, playerHitEnemy);
 
+  // make sure player is rotated towards the mouse
   player.rotation = game.physics.arcade.angleToPointer(player);
 
   //  Reset the players velocity (movement)
@@ -96,35 +113,34 @@ function update() {
   }
 
   // check player movement input
-  if (cursors.left.isDown || aKey.isDown)
+  if(aKey.isDown)
   {
     player.body.velocity.x = -state.playerSpeed;
   }
-  else if (cursors.right.isDown || dKey.isDown)
+  else if(dKey.isDown)
   {
     player.body.velocity.x = state.playerSpeed;
   }
 
-  if(cursors.up.isDown || wKey.isDown)
+  if(wKey.isDown)
   {
     player.body.velocity.y = -state.playerSpeed;
   }
-  else if(cursors.down.isDown || sKey.isDown)
+  else if(sKey.isDown)
   {
     player.body.velocity.y = state.playerSpeed;
   }
 
+  // spawn enemy if not in cooldown
   if(enemySpawnTimer < game.time.time) {
-    // console.log('true')
     enemySpawnTimer = game.time.time + state.enemySpawnCooldown;
     spawnEnemy();
   }
 
-  // update any enemies that have a non-fixed velocity
+  // update any enemies that are targeting the player
   enemies.children.forEach((child) => {
     if(child.data.type.targetsPlayer) {
       let rotation = game.math.angleBetween(child.x, child.y, player.x, player.y);
-      // Calculate velocity vector based on rotation and this.MAX_SPEED
       child.body.velocity.x = Math.cos(rotation) * child.data.type.speed;
       child.body.velocity.y = Math.sin(rotation) * child.data.type.speed;
     }
@@ -137,98 +153,53 @@ function render() {
 };
 
 function playerFire() {
-  // create a projectile and fire it in the direction of the parent
+  // spawn a projectile
 
-  // check if we can revive a dead sprite ---- more efficient
-  if(projectilesDead.children.length > 0)
+  for(let i = 0; i < projectiles.children.length; i++)
   {
-    // console.log('reviving projectile');
-    let projectile = projectilesDead.children[0];
-    // console.log(projectile)
-    projectile.reset(player.x, player.y);
-    projectile.rotation = player.rotation;
-    game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);    
-    projectiles.add(projectile);
-  } 
-  else // otherwise create a new projectile
-  {
-    // console.log('creating new projectile');  
-    let projectile = game.add.sprite(player.x, player.y, triangle); 
-    projectile.anchor.setTo(0.5, 0.5);
-    game.physics.arcade.enable(projectile);
-    projectile.rotation = player.rotation;
-    game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);
-    projectile.scale.x *= -1; // flip sprite
-    projectile.checkWorldBounds = true;
-    projectile.events.onOutOfBounds.add(projectileHitBounds);
-
-    projectiles.add(projectile);    
+    // check if we can revive an old projectile
+    if(!projectiles.children[i].alive) 
+    {
+      let projectile = projectiles.children[i];
+      projectile.reset(player.x, player.y);
+      projectile.rotation = player.rotation;
+      game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);    
+      return;
+    }
   }
-
-
-};
-
-function projectileHitBounds(sprite) {
-  // projectile has collided with world bounds
-
-  destroyProjectile(sprite);
+  
+  // create a new projectile if we don't have any we can revive
+  let projectile = game.add.sprite(player.x, player.y, triangle); 
+  projectile.anchor.setTo(0.5, 0.5);
+  game.physics.arcade.enable(projectile);
+  projectile.rotation = player.rotation;
+  game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);
+  projectile.scale.x *= -1; // flip sprite
+  projectile.checkWorldBounds = true;
+  projectile.events.onOutOfBounds.add(destroyProjectile);
+  projectiles.add(projectile);    
 };
 
 function destroyProjectile(sprite) {
+  // destroy the projectile
 
-  // create particle line img
-  let line = game.add.bitmapData(6,2);
-  line.ctx.beginPath();
-  line.ctx.moveTo(0, 0);
-  line.ctx.lineTo(0, 2);
-  line.ctx.lineTo(6, 2);
-  line.ctx.lineTo(6, 0);
-  line.ctx.fillStyle = '#dddddd';
-  line.ctx.fill();
-  game.cache.addBitmapData('line', line); // add to cache so we can load it
-
-  //create emmiter
+  // create particle emmiter
   let emitter = game.add.emitter(sprite.x, sprite.y, 50);
   emitter.makeParticles(game.cache.getBitmapData('line'));
   emitter.start(true, 2000, null, 10);
 
   // set each particle to have its own color
-
-  let colors = [
-    '0xFF5733',
-    '0x77FF33',
-    '0x33FFDA',
-    '0x337DFF',
-    '0x5E33FF',
-    '0xECFF33',
-    '0xFFBE33',
-    '0xFF33FF',
-    '0xFF3399',
-  ]
-  // give each particle the emitter made a color
   emitter.children.forEach((particle) => {
-    let color = colors[Math.floor(Math.random() * colors.length)];
+    let color = particleColors[Math.floor(Math.random() * particleColors.length)];
     particle.tint = color;
   });
   
-  // destroy the projectile that hit world bounds
-  // remove from group
+  // kill and remove from view, can be revived later
   sprite.kill();
 };
 
-
 function destroyEnemy(sprite) {
-  // create particle line img
-  let line = game.add.bitmapData(10,3);
-  line.ctx.beginPath();
-  line.ctx.moveTo(0, 0);
-  line.ctx.lineTo(0, 3);
-  line.ctx.lineTo(10, 3);
-  line.ctx.lineTo(10, 0);
-  line.ctx.fillStyle = '#dddddd';
-  line.ctx.fill();
-  game.cache.addBitmapData('line', line); // add to cache so we can load it
-
+  
   //create emmiter
   let emitter = game.add.emitter(sprite.x, sprite.y, 50);
   emitter.makeParticles(game.cache.getBitmapData('line'));
@@ -240,18 +211,20 @@ function destroyEnemy(sprite) {
 };
 
 function spawnEnemy() {
+  // spawn a new enemy
 
-  // get a random enemy type
+  // get a random enemy type for the new enemy
   let enemyType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+
   // get random spawn location
   let x = Math.floor(Math.random() * game._width) + 0;
   let y = Math.floor(Math.random() * game._height) + 0;
 
-  let deadEnemy = enemies.getFirstDead();
-  
+  // check if we can revive an old enemy of same type
   for(let i = 0; i < enemies.children.length; i++) {
     let enemy = enemies.children[i];
     if(!enemy.alive && enemy.data.type.name == enemyType.name) {
+      // reviving enemy
       enemy.reset(x, y);
       enemy.alpha = 0;
       let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true);
@@ -259,29 +232,9 @@ function spawnEnemy() {
       return;
     }
   }
-  // check if we can revive a dead sprite ---- more efficient
-    // for(let i = 0; i < enemies.children.length; i++)
-    // {
-    //   console.log(enemies.children[i]);
-    //   // if(enemies.children[i].data.type.name == enemyType.name)
-    //   // {
-    //   //   // console.log('reviving enemy');
-    //   //   let enemy = enemies.children[i];
-    //   //   enemy.reset(x, y);
-    //   //   enemy.alpha = 0;
-    //   //   // console.log(enemy);
-    //   //   // fade in enemy so that the player can see where enemies will be
-    //   //   // do not enable body/collision until full faded in
-    //   //   let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true);
-    //   //   fadeIn.onComplete.add(enemyFadedIn);
-    //   //   return;
-    //   // }
-    // } 
-  // console.log('creating new enemy sprite')
+
+  // if we can't revive create a new enemy
   let enemy = game.add.sprite(x, y, enemyType.name);
-  // console.log(enemy);
-  // fade in enemy so that the player can see where enemies will be
-  // do not enable body/collision until full faded in
   enemy.alpha = 0;
   let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true);
   fadeIn.onComplete.add(enemyFadedIn);
@@ -294,6 +247,9 @@ function spawnEnemy() {
 };
 
 function enemyFadedIn(enemy) {
+  // once an enemy has faded in set its random direction
+  // and add it to group for collision
+
   let xDir = Math.floor(Math.random() * 2);
   let yDir = Math.floor(Math.random() * 2);
   if (xDir == 0) xDir = -1; 
@@ -311,12 +267,9 @@ function projectileHitEnemy(projectile, enemy) {
 };
 
 function playerHitEnemy(player, enemy) {
-  // console.log("GAME OVER: PLAYER WAS HIT BY ENEMY");
   player.kill();
   enemy.kill();
 
-  // stop the game in its current state
-
-  // pause all physics
-  game.physics.arcade.isPaused = true;
+  // pause game on player death
+  game.paused = true;
 };
