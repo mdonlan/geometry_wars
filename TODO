@@ -6,6 +6,7 @@ Geometry Wars:
     ☐ movement
     ☐ shooting
     ☐ collision
+    ☐ add acceleration / deceleration
 
   Enemies:
     ☐ spawn
@@ -18,6 +19,7 @@ Geometry Wars:
       ☐ new weapons
       ☐ score multipliers
     ☐ points per kill - based off enemy difficulty
+    ☐ set max number of enemies alive -- for performance
   
   Particle Effects:
     ☐ projectile hit world bounds
@@ -28,6 +30,11 @@ Geometry Wars:
   Power-ups:
     ☐ invincible
     ☐ 
+
+  Score:
+    ☐ show on screen
+    ☐ increase for each enemy hit
+    ☐ as score increases make it more likely to spawn higher level enemies
 
   
   
