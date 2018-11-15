@@ -16,6 +16,8 @@ let state = {
   enemiesAlive: 0,
   maxEnemies: 50,
   fadeInTime: 3000,
+  basePointsPerHit: 1000,
+  playerScore: 0
 };
 
 let enemyTypes = [
@@ -23,25 +25,29 @@ let enemyTypes = [
     type: 0,
     name: "pinwheel",
     speed: 200,
-    targetsPlayer: false
+    targetsPlayer: false,
+    scoreMultiplier: 1
   },
   {
     type: 1,
     name: "diamond",
     speed: 150,
-    targetsPlayer: true
+    targetsPlayer: true,
+    scoreMultiplier: 2
   },
   {
     type: 2,
     name: "green_square",
     speed: 250,
-    targetsPlayer: true
+    targetsPlayer: true,
+    scoreMultiplier: 3    
   },
   {
     type: 3,
     name: "pink_square",
     speed: 250,
-    targetsPlayer: true
+    targetsPlayer: true,
+    scoreMultiplier: 4
   }
 ];
 
@@ -59,8 +65,9 @@ let particleColors = [
 
 document.addEventListener("mousemove", mouseHandler);
 
-function mouseHandler(event) {
-  if(player)
+function mouseHandler(event)
+{
+  if(typeof player != 'undefined')
   {
     let playerOffsetLeft = (window.innerWidth / 2) - 400;
     let playerOffsetTop = (window.innerHeight / 2) - 300;
@@ -69,7 +76,8 @@ function mouseHandler(event) {
   }
 };
 
-function preload() {
+function preload() 
+{
   game.time.advancedTiming = true;
   
   // load assets
@@ -80,10 +88,12 @@ function preload() {
   game.load.image('pink_square', 'assets/pink_square.png');
 };
 
-function create() {
+function create() 
+{
   // create groups
   projectiles = game.add.group();
   enemies = game.add.group();
+  emitters = game.add.group();
 
   // start physics
   game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -126,9 +136,12 @@ function create() {
   sKey = game.input.keyboard.addKey(Phaser.KeyCode.S);
   dKey = game.input.keyboard.addKey(Phaser.KeyCode.D);
 
+  displayPlayerScore();
+  
 };
 
-function update() {
+function update()
+{
 
   // check for collisions
   game.physics.arcade.overlap(projectiles, enemies, projectileHitEnemy);
@@ -172,7 +185,7 @@ function update() {
   if(enemySpawnTimer < game.time.time && state.enemiesAlive < state.maxEnemies)
   {
     enemySpawnTimer = game.time.time + state.enemySpawnCooldown;
-    let numEnemiesToSpawn = Math.floor(Math.random() * 3) + 1;
+    let numEnemiesToSpawn = Math.floor(Math.random() * 5) + 2; // 2-5
     for(let i = 0; i < numEnemiesToSpawn; i++) 
     {
       spawnEnemy();
@@ -187,9 +200,15 @@ function update() {
       child.body.velocity.y = Math.sin(rotation) * child.data.type.speed;
     }
   });
+
+  // rotate enemies
+  enemies.children.forEach((child) => {
+    child.rotation += 0.05;
+  });
 };
 
-function render() {
+function render()
+{
 
   game.debug.text(game.time.fps || '--', 2, 14, "#00ff00");   
 
@@ -199,7 +218,8 @@ function render() {
   }
 };
 
-function playerFire() {
+function playerFire() 
+{
   // spawn a projectile
 
   for(let i = 0; i < projectiles.children.length; i++)
@@ -227,43 +247,72 @@ function playerFire() {
   projectiles.add(projectile);    
 };
 
-function destroyProjectile(sprite) {
-  // destroy the projectile
+function spawnEmitter(sprite)
+{
+  // reuse or create a new emitter
+  
+  let emitter = emitters.children.find((child) => {return child.alive == false});
 
-  // create particle emmiter
-  let emitter = game.add.emitter(sprite.x, sprite.y, 50);
-  emitter.makeParticles(game.cache.getBitmapData('line'));
-  emitter.start(true, 500, null, 3);
+  if(emitter)
+  {
+    // reset dead enemy
+    emitter.revive();
+    emitter.x = sprite.x;
+    emitter.y = sprite.y;
+    emitter.makeParticles(game.cache.getBitmapData('line'));
+    emitter.start(true, 1000, null, 3);
+    game.time.events.add(1000, killEmitter, null, emitter);
+  }
+  else
+  {
+    // create particle emmiter
+    let emitter = game.add.emitter(sprite.x, sprite.y, 10);
+    emitter.makeParticles(game.cache.getBitmapData('line'));
+    emitter.start(true, 1000, null, 10);
+    game.time.events.add(1000, killEmitter, null, emitter);
+    emitters.add(emitter);
+  }
 
   // set each particle to have its own color
-  emitter.children.forEach((particle) => {
+  emitters.children.forEach((particle) => {
     let color = particleColors[Math.floor(Math.random() * particleColors.length)];
     particle.tint = color;
   });
-  
+};
+
+function killEmitter(emitter)
+{
+  emitter.children.forEach((child) => {
+    child.kill();
+  });
+  emitter.kill();
+};
+
+function destroyProjectile(sprite)
+{
+  // destroy the projectile
+
+  spawnEmitter(sprite);
   // kill and remove from view, can be revived later
   sprite.kill();
 };
 
-function destroyEnemy(sprite) {
+function destroyEnemy(sprite) 
+{
   
-  //create emmiter
-  let emitter = game.add.emitter(sprite.x, sprite.y, 50);
-  emitter.makeParticles(game.cache.getBitmapData('line'));
-  emitter.start(true, 2000, null, 10);
-  
+  spawnEmitter(sprite);
   // destroy the projectile that hit world bounds
   sprite.kill();
   state.enemiesAlive--;
-  console.log("Enemies Alive: " + state.enemiesAlive);
 };
 
-function spawnEnemy() {
+function spawnEnemy() 
+{
   // spawn a new enemy
 
   // // get a random enemy type for the new enemy
   let randEnemyType = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-  
+
   switch(randEnemyType.type) {
     case 0:
       createPinwheel();
@@ -275,23 +324,23 @@ function spawnEnemy() {
       createGreenSquare();
       break; 
     case 3:
-      //createPinkSquare();
+      createPinkSquare();
       break; 
   }
 };
 
-function createGreenSquare() {
+function createPinkSquare()
+{
   // create a new green square enemy
   
   // // get random spawn location
-  console.log(game._width, game._height)
   let x = Math.floor(Math.random() * game._width) + 0;
   let y = Math.floor(Math.random() * game._height) + 0;
 
   let xOffset = 0;
   let yOffset = 0;
 
-  let enemy = enemies.children.find((child) => {return child.alive == false && child.data.type.type == 2});
+  let enemy = enemies.children.find((child) => {return child.alive == false && child.data.type.type == 3});
   if(enemy)
   {
     // reset dead enemy
@@ -300,17 +349,15 @@ function createGreenSquare() {
     enemy.body.velocity.y = 0;
     enemy.alpha = 0;
     enemy.data.isFadedIn = false;
-    let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
-    fadeIn.onComplete.add(enemyFadedIn);
+    setSpriteFadeIn(enemy);
   }    
   if(!enemy)
   {
     // create new enemy
-    let enemy = game.add.sprite(x + xOffset, y + yOffset, enemyTypes[2].name);
+    let enemy = game.add.sprite(x + xOffset, y + yOffset, enemyTypes[3].name);
     enemy.alpha = 0;
-    let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
-    fadeIn.onComplete.add(enemyFadedIn);
-    enemy.data.type = enemyTypes[1];
+    setSpriteFadeIn(enemy);
+    enemy.data.type = enemyTypes[3];
     enemy.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(enemy);
     enemy.body.setSize(20, 20, 10, 10);
@@ -329,49 +376,112 @@ function createGreenSquare() {
 
   // increase enemy count
   state.enemiesAlive++;
-  console.log("Enemies Alive: " + state.enemiesAlive);
 
 };
 
-function createPinwheel() {
+function createGreenSquare() 
+{
+  // create a new green square enemy
+  
+  // // get random spawn location
+  let x = Math.floor(Math.random() * game._width) + 0;
+  let y = Math.floor(Math.random() * game._height) + 0;
+
+  let xOffset = 0;
+  let yOffset = 0;
+
+  let enemy = enemies.children.find((child) => {return child.alive == false && child.data.type.type == 2});
+  if(enemy)
+  {
+    // reset dead enemy
+    enemy.reset(x + xOffset, y + yOffset);
+    enemy.body.velocity.x = 0;
+    enemy.body.velocity.y = 0;
+    enemy.alpha = 0;
+    enemy.data.isFadedIn = false;
+    setSpriteFadeIn(enemy);
+  }    
+  if(!enemy)
+  {
+    // create new enemy
+    let enemy = game.add.sprite(x + xOffset, y + yOffset, enemyTypes[2].name);
+    enemy.alpha = 0;
+    setSpriteFadeIn(enemy);
+    enemy.data.type = enemyTypes[2];
+    enemy.anchor.setTo(0.5, 0.5);
+    game.physics.arcade.enable(enemy);
+    enemy.body.setSize(20, 20, 10, 10);
+    enemy.body.collideWorldBounds = true;
+    enemy.body.bounce.set(1);
+    enemies.add(enemy);
+  }
+  
+  // set x, y for next in group
+  xOffset += 40;
+  if(xOffset >= 120)
+  {
+    xOffset = 0;
+    yOffset += 40;
+  } 
+
+  // increase enemy count
+  state.enemiesAlive++;
+
+};
+
+function setSpriteFadeIn(sprite) 
+{
+  let fadeInTween = game.add.tween(sprite).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
+  fadeInTween.onComplete.add(enemyFadedIn);
+  sprite.scale.setTo(0.1, 0.1);
+  game.add.tween(sprite).to( { angle: 360 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
+  game.add.tween(sprite.scale).to( { x: 1, y: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
+};
+
+function createPinwheel() 
+{
   // create a new pinwheel enemy
 
   // // get random spawn location
   let x = Math.floor(Math.random() * game._width) + 0;
   let y = Math.floor(Math.random() * game._height) + 0;
 
-  //first check if we can revive a dead one
-  for(let i = 0; i < enemies.children.length; i++)
-  {
-    if(enemies.children[i].alive == false && enemies.children[i].data.type.type == 1)
-    {
-      // revive pinwheel
-      return;
-    }
-  }
+  let enemy = enemies.children.find((child) => {return child.alive == false && child.data.type.type == 0});
 
-  // if we got to this point it means we can't revive
-  // so create a new one, this is more expensive
-  
-  let enemy = game.add.sprite(x, y, enemyTypes[0].name);
-  enemy.alpha = 0;
-  let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
-  fadeIn.onComplete.add(enemyFadedIn);
-  enemy.data.type = enemyTypes[0];
-  enemy.anchor.setTo(0.5, 0.5);
-  game.physics.arcade.enable(enemy);
-  enemy.body.setSize(20, 20, 10, 10);
-  enemy.body.collideWorldBounds = true;
-  enemy.body.bounce.set(1);
-  enemies.add(enemy);
+  if(enemy)
+  {
+    // reset dead enemy
+    enemy.reset(x, y);
+    enemy.body.velocity.x = 0;
+    enemy.body.velocity.y = 0;
+    enemy.alpha = 0;
+    enemy.data.isFadedIn = false;
+    setSpriteFadeIn(enemy);
+  }
+  else
+  {    
+    // if we got to this point it means we can't revive
+    // so create a new one, this is more expensive
+    
+    let enemy = game.add.sprite(x, y, enemyTypes[0].name);
+    enemy.alpha = 0;
+    setSpriteFadeIn(enemy);
+    enemy.data.type = enemyTypes[0];
+    enemy.anchor.setTo(0.5, 0.5);
+    game.physics.arcade.enable(enemy);
+    enemy.body.setSize(20, 20, 10, 10);
+    enemy.body.collideWorldBounds = true;
+    enemy.body.bounce.set(1);
+    enemies.add(enemy);
+  }
 
   // increase enemy count
   state.enemiesAlive++;
-  console.log("Enemies Alive: " + state.enemiesAlive);
 
 };
 
-function createDiamond() {
+function createDiamond() 
+{
   // create a new diamond enemy group
 
   // // get random spawn location
@@ -395,16 +505,14 @@ function createDiamond() {
       enemy.body.velocity.y = 0;
       enemy.alpha = 0;
       enemy.data.isFadedIn = false;
-      let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
-      fadeIn.onComplete.add(enemyFadedIn);
+      setSpriteFadeIn(enemy);
     }    
     if(!enemy)
     {
       // create new enemy
       let enemy = game.add.sprite(x + xOffset, y + yOffset, enemyTypes[1].name);
       enemy.alpha = 0;
-      let fadeIn = game.add.tween(enemy).to( { alpha: 1 }, state.fadeInTime, Phaser.Easing.Linear.None, true);
-      fadeIn.onComplete.add(enemyFadedIn);
+      setSpriteFadeIn(enemy);
       enemy.data.type = enemyTypes[1];
       enemy.anchor.setTo(0.5, 0.5);
       game.physics.arcade.enable(enemy);
@@ -425,11 +533,11 @@ function createDiamond() {
 
   // increase enemy count
   state.enemiesAlive += 9;
-  console.log("Enemies Alive: " + state.enemiesAlive);
 
 };
 
-function enemyFadedIn(enemy) {
+function enemyFadedIn(enemy) 
+{
   // once an enemy has faded in set its random direction
   // and add it to group for collision
 
@@ -449,12 +557,30 @@ function enemyFadedIn(enemy) {
   enemy.data.isFadedIn = true;
 };
 
-function projectileHitEnemy(projectile, enemy) {
-  destroyProjectile(projectile);
-  destroyEnemy(enemy);
+function projectileHitEnemy(projectile, enemy) 
+{
+  if(enemy.data.isFadedIn)
+  {
+    destroyProjectile(projectile);
+    destroyEnemy(enemy);
+    setPlayerScore(enemy.data.type.scoreMultiplier)
+  }
 };
 
-function playerHitEnemy(player, enemy) {
+function setPlayerScore(multiplier) 
+{
+  state.playerScore += (state.basePointsPerHit * multiplier);
+  displayPlayerScore();
+};
+
+function displayPlayerScore()
+{
+  let elem = document.querySelector(".score");
+  elem.innerHTML = "SCORE: " + state.playerScore;
+};
+
+function playerHitEnemy(player, enemy) 
+{
   // player had a collision with an enemy
 
   // if the enemy is faded in count the hit
@@ -469,6 +595,7 @@ function playerHitEnemy(player, enemy) {
   }
 };
 
-function pause() {
+function pause() 
+{
   game.paused = true;
 };
