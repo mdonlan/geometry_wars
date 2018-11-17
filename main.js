@@ -23,7 +23,9 @@ let state = {
   playerScore: 0,
   highscore: 0,
   lives: 3,
-  isPaused: false
+  isPaused: false,
+  hasPowerup: false,
+  activePowerup: null
 };
 
 // load highscore
@@ -88,6 +90,18 @@ let enemyTypes = [
   }
 ];
 
+let powerupTypes = [
+  {
+    name: 'double_shot'
+  },
+  {
+    name: 'triple_shot'
+  },
+  {
+    name: 'shield'
+  }
+];
+
 let particleColors = [
   '0xFF5733',
   '0x77FF33',
@@ -133,6 +147,8 @@ function preload()
   game.load.image('yellow_triangle', 'assets/images/yellow_triangle2.png');
   game.load.image('double_shot', 'assets/images/double_shot_powerup.png');
   game.load.image('powerup_background', 'assets/images/powerup_background.png');
+  game.load.image('shield', 'assets/images/shield_powerup.png');
+  game.load.image('triple_shot', 'assets/images/triple_shot.png');
 
   // load sounds
   game.load.audio('explosion_01', 'assets/audio/explosion_01.wav');
@@ -351,7 +367,25 @@ function playerUpdate()
   if(game.input.activePointer.leftButton.isDown || spaceKey.isDown) {
     if(playerCooldownTimer < game.time.time) {
       playerCooldownTimer = game.time.time + state.playerCooldown;
-      fire();
+      
+      if(state.hasPowerup)
+      {
+        if(state.activePowerup.name == 'double_shot')
+        {
+          fire(0.05);
+          fire(-0.05);
+        }
+        else if(state.activePowerup.name == 'triple_shot')
+        {
+          fire(0.05);
+          fire(0);
+          fire(-0.05);  
+        }
+      }
+      else 
+      {
+        fire(0)
+      }
     }
   }
   
@@ -375,7 +409,7 @@ function playerUpdate()
   }
 };
 
-function fire() 
+function fire(angleOffset) 
 {
   // check if we can revive a dead projectile
   let projectile = projectiles.getFirstDead();
@@ -383,7 +417,7 @@ function fire()
   {
     projectile.reset(player.x, player.y);
     projectile.rotation = player.rotation;
-    game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);    
+    game.physics.arcade.velocityFromRotation(player.rotation + angleOffset, 400, projectile.body.velocity);    
   }
   else
   {
@@ -392,7 +426,7 @@ function fire()
     projectile.anchor.setTo(0.5, 0.5);
     game.physics.arcade.enable(projectile);
     projectile.rotation = player.rotation;
-    game.physics.arcade.velocityFromRotation(player.rotation, 400, projectile.body.velocity);
+    game.physics.arcade.velocityFromRotation(player.rotation + angleOffset, 400, projectile.body.velocity);
     projectile.scale.x *= -1; // flip sprite
     projectile.checkWorldBounds = true;
     projectile.events.onOutOfBounds.add(destroyProjectile);
@@ -639,13 +673,14 @@ function spawnPowerup()
     // create a popup
     let x = Math.floor(Math.random() * game._width) + 0;
     let y = Math.floor(Math.random() * game._height) + 0;
+    let powerupType = powerupTypes[Math.floor(Math.random() * powerupTypes.length)];
     
-    let powerup = game.add.sprite(x, y, 'double_shot');
+    let powerup = game.add.sprite(x, y, powerupType.name);
     game.physics.arcade.enable(powerup);
     powerup.anchor.setTo(0.5, 0.5);
     powerupSpawnTimer = game.time.time;
 
-    powerup.data.name = "double_shot";
+    powerup.data = {...powerupType};
     
     let child = powerup.addChild(game.make.sprite(0,0, 'powerup_background'));
     child.anchor.setTo(0.5, 0.5);
@@ -658,18 +693,8 @@ function spawnPowerup()
 
 function playerCollectedPowerup(player, powerup)
 {
-  state.playerPowerup = {...powerup.data};
+  state.activePowerup = {...powerup.data};
   state.hasPowerup = true;
   powerups.remove(powerup);
   powerup.kill();
-};
-
-function spawnNewSprite()
-{
-
-};
-
-function reviveSprite()
-{
-
 };

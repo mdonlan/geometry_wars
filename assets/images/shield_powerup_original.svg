@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1372"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="shield_powerup_original.svg"
+   inkscape:export-filename="C:\Users\Michael\Dropbox\Code\WEB\geometry_wars\assets\images\shield_powerup.png"
+   inkscape:export-xdpi="6.0342002"
+   inkscape:export-ydpi="6.0342002">
+  <defs
+     id="defs1366" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.7"
+     inkscape:cx="405.16041"
+     inkscape:cy="379.11646"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="1016"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata1369">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;fill-opacity:1;stroke:#1ffbe4;stroke-width:1.28118062;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 125.38645,194.90746 a 73.747347,47.67881 0 0 0 -36.6568,6.37597 c 6.013921,40.70565 19.79359,57.29581 36.65656,64.31234 16.86607,-7.01782 30.6482,-23.61282 36.66039,-64.33485 a 73.747347,47.67881 0 0 0 -36.66015,-6.35346 z"
+       id="path1917"
+       inkscape:connector-curvature="0" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path1950"
+       d="m 125.3866,197.81121 a 67.291415,43.504949 0 0 0 -33.44782,5.81781 c 5.487455,37.14222 18.06084,52.28007 33.4476,58.68236 15.38959,-6.40347 27.96523,-21.54572 33.4511,-58.70289 a 67.291415,43.504949 0 0 0 -33.45088,-5.79728 z"
+       style="fill:none;fill-opacity:1;stroke:#1ffbe4;stroke-width:0.75202757;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <circle
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#02fdf7;stroke-width:7.9369998;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="path817"
+       cx="124.82116"
+       cy="223.44608"
+       inkscape:export-xdpi="6.0342002"
+       inkscape:export-ydpi="6.0342002"
+       r="53.294643" />
+  </g>
+</svg>
