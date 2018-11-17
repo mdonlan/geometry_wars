@@ -11,3 +11,18 @@ html, body {
   justify-content: center;
   align-items: center;
 }
+
+.ui {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.score, 
+.highscore, 
+.lives,
+  {
+    margin-left: 10px;
+    margin-right: 10px;
+  }

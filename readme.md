@@ -13,6 +13,5 @@ Enemy Types:
   - Green Square
     - quickly moves toward player
   - Pink Square
-    -
   - Yellow Triangle 
     - very quickly moves to random spots

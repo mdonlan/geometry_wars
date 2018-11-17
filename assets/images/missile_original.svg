@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg:svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg3480"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
+   sodipodi:docname="missile_original.svg"
+   inkscape:export-filename="C:\Users\Michael\Dropbox\Code\WEB\geometry_wars\assets\images\missile_01.png"
+   inkscape:export-xdpi="2.2779737"
+   inkscape:export-ydpi="2.2779737">
+  <svg:defs
+     id="defs3474">
+    <svg:linearGradient
+       id="linearGradient4111"
+       osb:paint="solid">
+      <svg:stop
+         style="stop-color:#f42a00;stop-opacity:1;"
+         offset="0"
+         id="stop4109" />
+    </svg:linearGradient>
+    <svg:linearGradient
+       gradientTransform="matrix(1,0,0,1.0015239,-0.12893171,4.80245)"
+       inkscape:collect="always"
+       xlink:href="#linearGradient4129-0"
+       id="linearGradient4131"
+       x1="106.51833"
+       y1="228.67973"
+       x2="106.51832"
+       y2="261.82117"
+       gradientUnits="userSpaceOnUse" />
+    <svg:linearGradient
+       inkscape:collect="always"
+       id="linearGradient4129-0">
+      <svg:stop
+         style="stop-color:#f42a00;stop-opacity:1;"
+         offset="0"
+         id="stop4125" />
+      <svg:stop
+         style="stop-color:#f42a00;stop-opacity:0;"
+         offset="1"
+         id="stop4127" />
+    </svg:linearGradient>
+  </svg:defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="-62.88683"
+     inkscape:cy="303.75617"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1027"
+     inkscape:window-x="1016"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <svg:metadata
+     id="metadata3477">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </svg:metadata>
+  <svg:g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <svg:path
+       sodipodi:type="star"
+       style="opacity:1;fill:#fcfcfc;fill-opacity:1;stroke:#ffffff;stroke-width:7.93689108;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="path4027"
+       sodipodi:sides="3"
+       sodipodi:cx="104.32143"
+       sodipodi:cy="178.31548"
+       sodipodi:r1="127.51417"
+       sodipodi:r2="63.757084"
+       sodipodi:arg1="0.52359878"
+       sodipodi:arg2="1.5707963"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="m 214.75193,242.07256 -220.8610125,0 L 104.32143,50.801308 Z"
+       inkscape:transform-center-y="-34.285569"
+       transform="matrix(0.71933438,0,0,1.075506,31.509306,-30.259427)"
+       inkscape:export-xdpi="6.0342002"
+       inkscape:export-ydpi="6.0342002">
+      <
+         style="fill-opacity:1;fill:url(#linearGradient4144)" />
+    </svg:path>
+    <svg:rect
+       style="display:inline;opacity:1;fill:url(#linearGradient4131);fill-opacity:1;stroke:none;stroke-width:6.01958132;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:normal"
+       id="rect4035"
+       width="36.348656"
+       height="31.050512"
+       x="88.215057"
+       y="234.36523" />
+  </svg:g>
+</svg:svg>
