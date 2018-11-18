@@ -238,6 +238,9 @@ function create()
   explosion_03 = game.add.audio('explosion_03');
   explosion_04 = game.add.audio('explosion_04');
   explosion_05 = game.add.audio('explosion_05');
+
+  createGrid();
+
 };
 
 function update()
@@ -251,9 +254,9 @@ function update()
     game.physics.arcade.overlap(player, powerups, playerCollectedPowerup); // TURN OFF FOR DEV
     // game.physics.arcade.overlap(enemies, enemies, hitBlackhole);
     playerUpdate();
-    enemiesUpdate();
-    spawnNewEmemies();
-    powerupsUpdate();
+    // enemiesUpdate();
+    // spawnNewEmemies();
+    // powerupsUpdate();
   } 
 };
 
@@ -697,4 +700,131 @@ function playerCollectedPowerup(player, powerup)
   state.hasPowerup = true;
   powerups.remove(powerup);
   powerup.kill();
+};
+
+function createGrid()
+{
+  // create the background grid
+  
+  cols = 10;
+  rows = 10;
+  let numPointsPerRow = 10;
+  let numPoints = rows * numPointsPerRow;
+  paddingWidth = gameWidth / numPointsPerRow;
+  paddingHeight = gameHeight / numPointsPerRow;
+
+  points = [];
+  springs = [];
+
+  for(let y = 0; y < rows; y++)
+  {
+    let row = [];
+    points.push(row);
+    for(let x = 0; x < cols; x++)
+    {
+      let point = game.add.sprite(x * paddingWidth, y * paddingHeight, "powerup_background");
+      point.data.pos = {x: x, y: y};
+      point.data.connections = {
+        top: null,
+        bot: null,
+        left: null,
+        right: null
+      }
+      points[y].push(point);
+    }
+  }
+  createSprings();
+};
+
+function createSprings()
+{
+  for(let y = 0; y < rows; y++)
+  {
+    for(let x = 0; x < cols; x++ )
+    {
+      let point = points[y][x];
+      if(y - 1 >= 0)
+      {
+        let topPoint = points[y - 1][x];
+        point.data.connections.top = topPoint;
+      }
+
+      if(y + 1 <= rows - 1)
+      {
+        let botPoint = points[y + 1][x];
+        point.data.connections.bot = botPoint;
+      }
+
+      if(x - 1 >= 0)
+      {
+        let leftPoint = points[y][x - 1];
+        point.data.connections.left = leftPoint;        
+      }
+      
+      if(x + 1 <= cols - 1)
+      {
+        let rightPoint = points[y][x + 1];
+        point.data.connections.right = rightPoint;
+      }
+
+        drawSprings(point);
+
+      if(x == 0 && y == 0)
+      {
+        // drawSprings(point);
+
+      }
+    }
+  }
+};
+
+function drawSprings(point)
+{
+  Object.keys(point.data.connections).forEach(function(key) {
+    let value = point.data.connections[key];
+    
+    // console.log(key, value);
+    if(value && key == 'top' || value && key == 'right')
+    {
+      let spring = game.add.sprite(point.data.connections[key].x, point.data.connections[key].y, game.cache.getBitmapData('line'));    
+      if(key == 'top')
+      {
+        spring.x += 10;
+        spring.y += 30;
+        spring.angle = 0;
+        spring.height = paddingHeight - 30;
+      }
+      else if(key == 'right')
+      {
+        spring.angle = 90;
+        spring.y += 10;
+        spring.height = paddingWidth - 30;
+      }
+      else if(key == 'bot')
+      {
+        
+      }
+      else if(key == 'left')
+      {
+        spring.x -= 10;
+      }
+
+      springs.push(spring);
+
+    }
+    // spring.scale.setTo(2,2);  
+  });
+};
+
+function dampenForce(point)
+{
+  if(point.velocity.x != 0 || point.velocity.y != 0)
+  {
+    console.log('test')
+  }
+};
+
+function forceEvent()
+{
+  // an event that causes sprints to react to a force
 };
