@@ -16,9 +16,9 @@
    id="svg8"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="yellow_triangle_vector.svg"
-   inkscape:export-filename="C:\Users\Michael\Dropbox\Code\WEB\geometry_wars\assets\yellow_triangle2.png"
-   inkscape:export-xdpi="6.0342045"
-   inkscape:export-ydpi="6.0342045">
+   inkscape:export-filename="C:\Users\Michael\Dropbox\Code\WEB\geometry_wars\assets\yellow_triangle3.png"
+   inkscape:export-xdpi="4.6599998"
+   inkscape:export-ydpi="4.6599998">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.5"
-     inkscape:cx="303.31932"
-     inkscape:cy="429.41923"
+     inkscape:zoom="0.35355339"
+     inkscape:cx="103.36898"
+     inkscape:cy="530.55645"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -48,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -58,7 +58,7 @@
      id="layer1">
     <path
        sodipodi:type="star"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#fff801;stroke-width:7.68429375;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stroke-linejoin:miter;stroke-linecap:round"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#fff801;stroke-width:8;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path821"
        sodipodi:sides="3"
        sodipodi:cx="104.0213"
@@ -71,25 +71,27 @@
        inkscape:rounded="0"
        inkscape:randomized="0"
        d="m 178.86705,198.77317 -149.691502,0 L 104.0213,69.136528 Z"
-       inkscape:transform-center-y="-21.60611" />
+       inkscape:transform-center-y="-34.038993"
+       transform="matrix(1,0,0,1.5754336,0,-39.783482)" />
     <path
        sodipodi:type="star"
-       style="opacity:1;fill:none;fill-opacity:1;stroke:#fff801;stroke-width:7.9375;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#fff801;stroke-width:6.49411869;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path821-7"
        sodipodi:sides="3"
-       sodipodi:cx="103.45209"
-       sodipodi:cy="154.05179"
-       sodipodi:r1="39.173058"
-       sodipodi:r2="19.586531"
+       sodipodi:cx="104.0213"
+       sodipodi:cy="155.89417"
+       sodipodi:r1="61.766392"
+       sodipodi:r2="30.883198"
        sodipodi:arg1="0.52359878"
        sodipodi:arg2="1.5707963"
        inkscape:flatsided="true"
        inkscape:rounded="0"
        inkscape:randomized="0"
-       d="m 137.37695,173.63832 -67.849726,0 33.924866,-58.75959 z"
-       inkscape:transform-center-y="-9.7932609"
-       inkscape:transform-center-x="-4.0228864e-006"
+       d="m 157.51257,186.77736 -106.982533,0 53.491263,-92.649587 z"
+       inkscape:transform-center-y="-24.327223"
+       inkscape:transform-center-x="-1.1366673e-005"
        inkscape:export-xdpi="6.0342045"
-       inkscape:export-ydpi="6.0342045" />
+       inkscape:export-ydpi="6.0342045"
+       transform="matrix(1,0,0,1.5754336,0,-39.783482)" />
   </g>
 </svg>

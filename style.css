@@ -19,10 +19,7 @@ html, body {
   align-items: center;
 }
 
-.score, 
-.highscore, 
-.lives,
-  {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
+.score, .lives, .highscore {
+  margin-left: 10px;
+  margin-right: 10px;
+}
